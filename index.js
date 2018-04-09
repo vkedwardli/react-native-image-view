@@ -291,6 +291,10 @@ export default class ImageView extends Component<PropsType> {
     componentWillReceiveProps(nextProps: PropsType) {
         const {images, imageIndex, isVisible} = this.state;
 
+        if(images !== nextProps.images){
+            this.setState({images: nextProps.images})
+        }
+
         if (
             typeof nextProps.isVisible !== 'undefined' &&
             nextProps.isVisible !== isVisible
@@ -500,11 +504,19 @@ export default class ImageView extends Component<PropsType> {
             }
         }
 
-        const {x, y} = this.calcultateNextTranslate(dx, dy, scale);
+        let {x, y} = this.calcultateNextTranslate(dx, dy, scale);
         const scrollEnabled =
             scale === this.getInitialScale() &&
             x === imageInitialTranslate.x &&
             y === imageInitialTranslate.y;
+        
+        if(Number.isNaN(x)){
+            x = imageInitialTranslate.x
+        }
+
+        if(Number.isNaN(y)){
+            y = imageInitialTranslate.y
+        }
 
         Animated.parallel(
             [
